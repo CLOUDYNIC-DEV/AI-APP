@@ -1,22 +1,27 @@
-// ==========================================
-// CONFIGURATION VARIABLES (Change these)
-// ==========================================
+// CHAT API CONFIGURATION
 const API_KEY = "YOUR_API_KEY_HERE"; 
-const TRAIN_TEXT = "Train data text";
-const APP_NAME = "App Name";
-// ==========================================
+const TRAIN_TEXT = "Your Train Text";
+const APP_NAME = "Your App Name";
+
+// ADSENSE MONETIZATION CONFIGURATION
+const ADSENSE_PUBLISHER_ID = "ca-pub-XXXXXXXXXXXXXXXX"; // Your real pub ID
+const TOP_BANNER_AD_SLOT   = "1234567890"; 
+const BOTTOM_BOX_AD_SLOT   = "0987654321";
 
 exports.handler = async function (event, context) {
-  // Route 1: Handle Front-end initialization configurations safely
   if (event.httpMethod === "GET" && event.queryStringParameters.init === "true") {
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ appName: APP_NAME })
+      body: JSON.stringify({ 
+        appName: APP_NAME,
+        pubId: ADSENSE_PUBLISHER_ID,
+        topSlot: TOP_BANNER_AD_SLOT,
+        bottomSlot: BOTTOM_BOX_AD_SLOT
+      })
     };
   }
 
-  // Route 2: Handle API Prompt Requests via POST
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
@@ -27,7 +32,6 @@ exports.handler = async function (event, context) {
       return { statusCode: 400, body: "Missing prompt parameter" };
     }
 
-    // Build the underlying API request cleanly using parameters inside this script
     const cloudynicUrl = new URL("https://cloudynic.com/api/v1/prompt");
     cloudynicUrl.searchParams.append("prompt", prompt);
     cloudynicUrl.searchParams.append("key", API_KEY);
@@ -47,7 +51,7 @@ exports.handler = async function (event, context) {
   } catch (error) {
     return {
       statusCode: 500,
-      body: "Internal Server Error: " + error.message
+      body: "Internal Error: " + error.message
     };
   }
 };
